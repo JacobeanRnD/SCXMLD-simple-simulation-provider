@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/JacobeanRnD/SCXMLD-docker-simulation-provider",
   "dependencies": {
-    "scxml": "file:../../../../../tmp/npm-11711-5a452fd1/git-cache-a422f4da739c/0b41d34587640a791a6c246937d13588b0aa48e1",
+    "scxml": "git://github.com/jbeard4/SCION.git#2.0.0-w3c-ecma",
     "uuid": "^2.0.1"
   }
 }
