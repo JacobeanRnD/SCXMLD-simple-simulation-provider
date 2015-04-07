@@ -1,0 +1,28 @@
+{
+  "name": "SCXMLD-simple-simulation-provider",
+  "version": "1.0.0",
+  "description": "Simple in-memory SCION simulation provider",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JacobeanRnD/SCXMLD-docker-simulation-provider.git"
+  },
+  "keywords": [
+    "docker",
+    "scion",
+    "scxml"
+  ],
+  "author": "Jacob Beard <jake@jacobeanrnd.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JacobeanRnD/SCXMLD-docker-simulation-provider/issues"
+  },
+  "homepage": "https://github.com/JacobeanRnD/SCXMLD-docker-simulation-provider",
+  "dependencies": {
+    "scxml": "file:../../../../../tmp/npm-11711-5a452fd1/git-cache-a422f4da739c/0b41d34587640a791a6c246937d13588b0aa48e1",
+    "uuid": "^2.0.1"
+  }
+}
