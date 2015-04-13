@@ -73,8 +73,9 @@ module.exports = function () {
 
   server.unregisterListener = function (id, done) {
     var instance = instances[id];
-
-    instance.unregisterListener(instance.listener);
+    
+    if (instance) 
+      instance.unregisterListener(instance.listener);
 
     if(done) done();
   };
