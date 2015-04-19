@@ -20,8 +20,10 @@ module.exports = function () {
   };
 
   server.createInstance = function (chartName, id, done) {
-    var instance = new scxml.scion.Statechart(models[chartName]);
-    instance.id = chartName + '/' + (id || uuid.v1());
+    var instanceId = chartName + '/' + (id || uuid.v1()),
+      instance = new scxml.scion.Statechart(models[chartName], { sessionid: instanceId });
+
+    instance.id = instanceId;
     
     instances[instance.id] = instance;
 
