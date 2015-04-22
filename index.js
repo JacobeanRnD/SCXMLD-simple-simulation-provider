@@ -9,6 +9,10 @@ var instances = {};
 module.exports = function () {
   var server = {};
 
+  server.createStatechartWithTar = function (scName, files, done) {
+    done({ message: 'Tar streams are not implemented on simple simulation server;'});
+  };
+
   server.createStatechart = function (scName, scxmlString, done) {
     scxml.documentStringToModel(null, scxmlString, function (err, model) {
       var chartName = scName || model.meta.name || uuid.v1();
