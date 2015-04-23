@@ -5,9 +5,9 @@
   "main": "index.js",
   "license": "Apache-2.0",
   "author": {
-    "name" : "Jacob Beard",
-    "email" : "jake@jacobeanrnd.com",
-    "url" : "http://github.com/jbeard4"
+    "name": "Jacob Beard",
+    "email": "jake@jacobeanrnd.com",
+    "url": "http://github.com/jbeard4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,7 +26,9 @@
   },
   "homepage": "https://github.com/JacobeanRnD/SCXMLD-docker-simulation-provider",
   "dependencies": {
+    "rimraf": "^2.3.2",
     "scxml": "git://github.com/jbeard4/SCION.git#2.0.0-w3c-ecma",
+    "tar": "^2.1.0",
     "uuid": "^2.0.1"
   }
 }
