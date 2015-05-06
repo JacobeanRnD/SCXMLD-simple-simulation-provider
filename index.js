@@ -34,7 +34,6 @@ module.exports = function () {
       cephResponse.on('end',function() {
 
         scxml.ext.platformModule.platform.getResourceFromUrl = function(fileUrl, cb){
-          console.log('external', fileUrl);
           var options = url.parse(fileUrl);
           if(options.hostname){
             http.get(options, function(res) {
@@ -60,7 +59,6 @@ module.exports = function () {
                 s += d;
               });
               res.on('end',function(){
-                console.log('external result', res.statusCode, s, chartName + '/' + fileUrl);
                 if(res.statusCode === 200){
                   cb(null,s);
                 }else{
@@ -72,7 +70,6 @@ module.exports = function () {
         };
 
         scxml.documentStringToModel(null, scxmlString, function(err, model) {
-          console.log(model.toString());
           models[chartName] = model;
 
           done(err);
