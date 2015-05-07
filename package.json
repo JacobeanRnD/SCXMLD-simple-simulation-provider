@@ -27,7 +27,7 @@
   "homepage": "https://github.com/JacobeanRnD/SCXMLD-docker-simulation-provider",
   "dependencies": {
     "rimraf": "^2.3.2",
-    "scxml": "git://github.com/jbeard4/SCION.git#2.0.0-w3c-ecma",
+    "scxml": "git://github.com/jbeard4/SCION.git#44436d1a9294dc32c358cb84d3e1d0400dae0c4f",
     "tar": "^2.1.0",
     "uuid": "^2.0.1"
   }
