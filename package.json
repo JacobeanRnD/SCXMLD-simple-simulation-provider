@@ -3,7 +3,7 @@
   "version": "0.0.1a",
   "description": "Simple in-memory SCION simulation provider",
   "main": "index.js",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0",
   "author": {
     "name": "Jacob Beard",
     "email": "jake@jacobeanrnd.com",
