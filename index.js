@@ -112,21 +112,16 @@ module.exports = function () {
     done(null, instance.getSnapshot());
   };
 
-  server.sendEvent = function (id, event, sendUrl, done, respond) {
+  server.sendEvent = function (id, event, sendUrl, done) {
     var instance = instances[id];
 
     if(event.name === 'system.start') {
-      server.startInstance(id, sendUrl, finish);
+      server.startInstance(id, sendUrl, done);
     } else {
       instance.gen(event);
       var conf = instance.getSnapshot();
 
-      finish(null, conf);
-    }
-
-    function finish(err,conf){
-      done(null, conf);   //this says it's OK to process the next event
-      respond(event.uuid, conf);    //this closes the connection
+      done(null, conf);
     }
   };
 
