@@ -88,7 +88,62 @@ module.exports = function () {
 
   server.createInstance = function (chartName, id, done) {
     var instanceId = chartName + '/' + (id || uuid.v1()),
-      instance = new scxml.scion.Statechart(models[chartName], { sessionid: instanceId });
+      instance = new scxml.scion.Statechart(models[chartName], { 
+        customSend: function (event, options, sendUrl, sendEvent) {
+
+          console.log('customSend',event);
+
+
+          var n;
+
+          switch(event.type) {
+            case 'http://www.w3.org/TR/scxml/#SCXMLEventProcessor':
+              //normalize to an HTTP event
+              //assume this is of the form '/foo/bar/bat'
+            case 'http://www.w3.org/TR/scxml/#BasicHTTPEventProcessor':
+              if(!event.target) {
+                n = function () {
+                  sendEventToSelf(event, sendUrl);
+                };
+              } else {
+                n = function(){
+                  var options = {
+                    method : 'POST',
+                    json : event,
+                    url : event.target
+                  };
+                  debug('sending event', options);
+                  request(options,function(error, body, response ) {
+                    //ignore the response for now
+                    console.log('send response', body);
+                  });
+                };
+              }
+
+              break;
+
+            case 'http://scxml.io/scxmld':
+              if(event.target === 'scxml://publish'){
+                var subscriptions = instanceSubscriptions[chartName + '/' + id];
+                console.log('subscriptions for instance',id,subscriptions);
+                subscriptions.forEach(function(response){
+                  console.log('response',response);
+                  response.write('event: ' + event.name + '\n');
+                  response.write('data: ' + JSON.stringify(event.data) + '\n\n');
+                });
+              } 
+            default:
+              console.log('wrong processor', event.type);
+              break;
+          }
+
+          var timeoutId = setTimeout(n, options.delay || 0);
+          if (options.sendid) timeoutMap[options.sendid] = timeoutId;
+        },
+        customCancel: function (sendid) {
+        },
+        sessionid: instanceId 
+      });
 
     instance.id = instanceId;
     
@@ -134,6 +189,8 @@ module.exports = function () {
     var instance = instances[id];
 
     if(!instance) return done(new Error('Instance not found'));
+
+    console.log('adding subscription to instance',id);
 
     instanceSubscriptions[id] = instanceSubscriptions[id] || [];
 
