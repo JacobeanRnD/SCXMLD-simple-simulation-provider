@@ -4,7 +4,8 @@ var scxml = require('scxml'),
   uuid = require('uuid'),
   url = require('url'),
   http = require('http'),
-  knox = require('knox');
+  knox = require('knox'),
+  request = require('request');
 
 var models = {};
 var instances = {};
@@ -86,6 +87,24 @@ module.exports = function () {
     });
   };
 
+  var timeoutMap = {};
+
+  function sendEventToSelf(event, sendUrl){
+    var selfUrl = sendUrl || process.env.SEND_URL + event.origin;
+    
+    var options = {
+      method : 'POST',
+      json : event,
+      url : selfUrl
+    };
+
+    console.log('sending event to self',options);
+
+    request(options,function(error, response){
+      if(error) console.error('error sending event to server', error || response.body);
+    });
+  }
+
   server.createInstance = function (chartName, id, done) {
     var instanceId = chartName + '/' + (id || uuid.v1()),
       instance = new scxml.scion.Statechart(models[chartName], { 
@@ -115,7 +134,7 @@ module.exports = function () {
                   debug('sending event', options);
                   request(options,function(error, body, response ) {
                     //ignore the response for now
-                    console.log('send response', body);
+                    //console.log('send response', body);
                   });
                 };
               }
@@ -141,6 +160,8 @@ module.exports = function () {
           if (options.sendid) timeoutMap[options.sendid] = timeoutId;
         },
         customCancel: function (sendid) {
+          clearTimeout(timeoutMap[sendid]);
+          delete timeoutMap[sendid];
         },
         sessionid: instanceId 
       });
@@ -168,11 +189,15 @@ module.exports = function () {
   };
 
   server.sendEvent = function (id, event, sendUrl, eventUuid, done, respond) {
+    console.log('provider sending event', id, event);
     var instance = instances[id];
+
+    console.log('instance',instance);
 
     if(event.name === 'system.start') {
       server.startInstance(id, sendUrl, finish);
     } else {
+      
       instance.gen(event);
       var conf = instance.getSnapshot();
 
