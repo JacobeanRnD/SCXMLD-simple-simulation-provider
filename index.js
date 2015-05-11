@@ -213,9 +213,7 @@ module.exports = function () {
     var instance = instances[id];
 
     if(!instance) return done(new Error('Instance not found'));
-
-    console.log('adding subscription to instance',id);
-
+    
     instanceSubscriptions[id] = instanceSubscriptions[id] || [];
 
     instanceSubscriptions[id].push(response);
