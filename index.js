@@ -131,7 +131,6 @@ module.exports = function () {
                     json : event,
                     url : event.target
                   };
-                  debug('sending event', options);
                   request(options,function(error, body, response ) {
                     //ignore the response for now
                     //console.log('send response', body);
@@ -151,6 +150,7 @@ module.exports = function () {
                   response.write('data: ' + JSON.stringify(event.data) + '\n\n');
                 });
               } 
+              break;
             default:
               console.log('wrong processor', event.type);
               break;
