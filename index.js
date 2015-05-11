@@ -192,8 +192,6 @@ module.exports = function () {
     console.log('provider sending event', id, event);
     var instance = instances[id];
 
-    console.log('instance',instance);
-
     if(event.name === 'system.start') {
       server.startInstance(id, sendUrl, finish);
     } else {
