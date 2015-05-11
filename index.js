@@ -192,10 +192,11 @@ module.exports = function () {
     console.log('provider sending event', id, event);
     var instance = instances[id];
 
+    if(!instance) return done({ statusCode: 404 });
+
     if(event.name === 'system.start') {
       server.startInstance(id, sendUrl, finish);
     } else {
-      
       instance.gen(event);
       var conf = instance.getSnapshot();
 
