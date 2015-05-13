@@ -14,22 +14,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/JacobeanRnD/SCXMLD-docker-simulation-provider.git"
+    "url": "https://github.com/JacobeanRnD/SCXMLD-simple-simulation-provider.git"
   },
   "keywords": [
-    "docker",
+    "simple",
     "scion",
     "scxml"
   ],
   "bugs": {
-    "url": "https://github.com/JacobeanRnD/SCXMLD-docker-simulation-provider/issues"
+    "url": "https://github.com/JacobeanRnD/SCXMLD-simple-simulation-provider/issues"
   },
-  "homepage": "https://github.com/JacobeanRnD/SCXMLD-docker-simulation-provider",
+  "homepage": "https://github.com/JacobeanRnD/SCXMLD-simple-simulation-provider",
   "dependencies": {
     "request": "^2.55.0",
-    "rimraf": "^2.3.2",
-    "scxml": "git://github.com/jbeard4/SCION.git#44436d1a9294dc32c358cb84d3e1d0400dae0c4f",
-    "tar": "^2.1.0",
+    "scxml": "git://github.com/jbeard4/SCION.git#1c4724724b4d01b7a773899e5873da88ad345212",
     "uuid": "^2.0.1"
   }
 }
