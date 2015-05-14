@@ -27,7 +27,7 @@
   "homepage": "https://github.com/JacobeanRnD/SCXMLD-simple-simulation-provider",
   "dependencies": {
     "request": "^2.55.0",
-    "scxml": "git://github.com/jbeard4/SCION.git#1c4724724b4d01b7a773899e5873da88ad345212",
+    "scxml": "git://github.com/jbeard4/SCION.git#dd6465f58882e85ee2a599de9513662e453be21f",
     "uuid": "^2.0.1"
   }
 }
