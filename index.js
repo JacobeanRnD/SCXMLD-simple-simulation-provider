@@ -2,13 +2,91 @@
 
 var scxml = require('scxml'),
   uuid = require('uuid'),
+  url = require('url'),
+  http = require('http'),
+  knox = require('knox'),
   request = require('request');
 
+var models = {};
 var instances = {};
 var instanceSubscriptions = {};
 
-module.exports = function (db, model) {
+var cephClient = knox.createClient({
+  port: process.env.CEPH_PORT,
+  bucket: process.env.CEPH_BUCKET,
+  endpoint: process.env.CEPH_HOST,
+  key : process.env.CEPH_KEY,
+  secret : process.env.CEPH_SECRET,
+  style: 'path',
+  secure: false
+});
+
+module.exports = function () {
   var server = {};
+
+  server.createStatechartWithTar = function (chartName, done) {
+    cephClient.getFile(chartName + '/index.scxml', function(err, cephResponse) {
+      var scxmlString = '';
+
+      cephResponse.on('data',function(s) {
+        scxmlString += s;
+      });
+
+      cephResponse.on('end',function() {
+
+        scxml.ext.platformModule.platform.getResourceFromUrl = function(fileUrl, cb){
+          var options = url.parse(fileUrl);
+          if(options.hostname){
+            http.get(options, function(res) {
+              var s = '';
+              res.on('data',function(d){
+                s += d;
+              });
+              res.on('end',function(){
+                if(res.statusCode === 200){
+                  cb(null,s);
+                }else{
+                  cb(new Error('HTTP code ' + res.statusCode + ' : ' + s));
+                }
+              });
+            }).on('error', function(e) {
+              cb(e);
+            });
+          }else{
+            //maybe we pass in 
+            cephClient.getFile(chartName + '/' + fileUrl, function(err, res){
+              var s = '';
+              res.on('data',function(d){
+                s += d;
+              });
+              res.on('end',function(){
+                if(res.statusCode === 200){
+                  cb(null,s);
+                }else{
+                  cb(new Error('HTTP code ' + res.statusCode + ' : ' + s));
+                }
+              });
+            });
+          }
+        };
+
+        scxml.documentStringToModel(null, scxmlString, function(err, model) {
+          models[chartName] = model;
+
+          done(err);
+        });
+      });
+    });
+  };
+
+  server.createStatechart = function (chartName, scxmlString, done) {
+    scxml.documentStringToModel(null, scxmlString, function(err, model){
+      models[chartName] = model;
+
+      done(err);
+    });
+  };
+
   var timeoutMap = {};
 
   function sendEventToSelf(event, sendUrl){
@@ -20,16 +98,16 @@ module.exports = function (db, model) {
       url : selfUrl
     };
 
-    console.log('sending event to self', options);
+    console.log('sending event to self',options);
 
     request(options,function(error, response){
       if(error) console.error('error sending event to server', error || response.body);
     });
   }
 
-  server.createInstance = function (id, done) {
-    var instanceId = id || uuid.v1(),
-      instance = new scxml.scion.Statechart(model, { 
+  server.createInstance = function (chartName, id, done) {
+    var instanceId = chartName + '/' + (id || uuid.v1()),
+      instance = new scxml.scion.Statechart(models[chartName], { 
         customSend: function (event, options, sendUrl, sendEvent) {
 
           console.log('customSend',event);
@@ -64,7 +142,7 @@ module.exports = function (db, model) {
 
             case 'http://scxml.io/scxmld':
               if(event.target === 'scxml://publish'){
-                var subscriptions = instanceSubscriptions[id];
+                var subscriptions = instanceSubscriptions[chartName + '/' + id];
                 console.log('subscriptions for instance',id,subscriptions);
                 subscriptions.forEach(function(response){
                   console.log('response',response);
@@ -189,6 +267,12 @@ module.exports = function (db, model) {
     });
 
     if(done) done();
+  };
+
+  server.deleteStatechart = function (chartName, done) {
+    var success = delete models[chartName];
+
+    done(null, success);
   };
 
   server.deleteInstance = function (id, done) {
